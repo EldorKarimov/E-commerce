@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import HttpRequest
 from .models import Media, Settings, Country, Region, OurInstagramStory, CustomerFeedback
 
 @admin.register(Media)
@@ -34,3 +35,6 @@ class CustomerFeedbackAdmin(admin.ModelAdmin):
     list_display = ('id', 'description', 'rank', 'customer_name', 'customer_position', 'customer_image', 'created', 'updated')
     search_fields = ('description', 'customer_name', 'customer_position')
     list_filter = ('rank', 'customer_image')
+
+    def has_add_permission(self, request):
+        return False

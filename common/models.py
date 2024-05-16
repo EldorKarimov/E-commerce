@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name = "Created time")
@@ -71,7 +72,9 @@ class OurInstagramStory(BaseModel):
 
 class CustomerFeedback(BaseModel):
     description = models.TextField(_("Description"))
-    rank = models.IntegerField(_("Rank"))
+    rank = models.IntegerField(_("Rank"), validators=[
+        MinValueValidator(1), MaxValueValidator(5)
+    ])
     customer_name = models.CharField(_("Customer name"), max_length=60)
     customer_position = models.CharField(_("Customer position"), max_length=60)
     customer_image = models.ForeignKey('Media', on_delete=models.CASCADE, related_name='customer_images')
