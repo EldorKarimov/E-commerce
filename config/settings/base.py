@@ -32,7 +32,10 @@ LOCAL_APPS = [
     'common',
     ]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'ckeditor_uploader',
+    'ckeditor',
+]
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS 
 
@@ -126,3 +129,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'account.User'
+
+# ckeditor configurations
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'height': 300,
+        'width': 650,
+    },
+}
+CKEDITOR_UPLOAD_PATH = "uploads/"
