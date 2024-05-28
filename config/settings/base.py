@@ -35,6 +35,7 @@ LOCAL_APPS = [
 THIRD_PARTY_APPS = [
     'ckeditor_uploader',
     'ckeditor',
+    'rest_framework'
 ]
 
 INSTALLED_APPS = LOCAL_APPS + THIRD_PARTY_APPS 
@@ -139,3 +140,13 @@ CKEDITOR_CONFIGS = {
     },
 }
 CKEDITOR_UPLOAD_PATH = "uploads/"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT')
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+
+EXPIRES_OTP_CODE = 2 # minutes

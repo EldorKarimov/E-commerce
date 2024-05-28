@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, URLValidator
+from django.core.exceptions import ValidationError
 
 class BaseModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name = "Created time")
@@ -15,6 +16,23 @@ class Media(BaseModel):
         VIDEO = 'video', _("Video")
     file = models.FileField(_("File"), upload_to="files/")
     type = models.CharField(_("File type"), choices=MediaType.choices, max_length=10)
+
+    def clean(self):
+        if self.type == self.MediaType.IMAGE:
+            if not self.file.name.endswith(('.jpg', '.jpeg', '.png')):
+                raise ValidationError("Images type must be .jpg, .jpeg, .png")
+        elif self.type == self.MediaType.FILE:
+            if not self.file.name.endswith(('.docx', '.pdf', '.doc')):
+                raise ValidationError("Files type must be .docx, .pdf, .doc")
+        elif self.type == self.MediaType.VIDEO:
+            if not self.file.name.endswith('.mp4'):
+                raise ValidationError("Video type must be .mp4")
+        elif self.type == self.MediaType.MUSIC:
+            if not self.file.name.endswith('.mp3', 'wav'):
+                raise ValidationError("Video type must be .mp3, .wav")
+        else:
+            raise ValidationError("File type is not valid")
+        return super().clean()
 
     def __str__(self):
         return str(self.id)
@@ -48,7 +66,7 @@ class Country(BaseModel):
 
 class Region(BaseModel):
     name = models.CharField(max_length=50, verbose_name="Region name")
-    zip_code = models.CharField(max_length=20, verbose_name="Zip code")
+    zip_code = models.CharField(max_length=20, verbose_name="Zip code", null=True)
     country_name = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="regions")
 
     def __str__(self):
@@ -60,7 +78,9 @@ class Region(BaseModel):
     
 class OurInstagramStory(BaseModel):
     image = models.ForeignKey('Media', on_delete=models.CASCADE, related_name='instagram_stories')
-    story_link = models.URLField(_("Story link"))
+    story_link = models.URLField(_("Story link"), validators=[
+        URLValidator()
+    ])
 
     def __str__(self):
         return str(self.story_link)
